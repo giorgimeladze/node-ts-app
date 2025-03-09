@@ -1,6 +1,14 @@
 import { Request, Response } from "express";
 import Article, { IArticle } from '../models/article'
 
+// Helper function to format response
+const formatArticle = (article: IArticle) => ({
+  id: article._id,
+  title: article.title,
+  content: article.content,
+  createdAt: article.createdAt,
+});
+
 // /api/v1/articles GET
 export const getAllArticles = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -8,7 +16,7 @@ export const getAllArticles = async (req: Request, res: Response): Promise<void>
     res.status(200).json({
       message: 'success',
       size: articles.length,
-      articles
+      articles: articles.map(formatArticle)
     })
   } catch (err) {
     res.status(500).json({
@@ -28,7 +36,7 @@ export const getArticleById = async (req: Request, res: Response): Promise<void>
     }
     res.status(200).json({
       message: 'success',
-      article
+      article: formatArticle(article)
     })
   } catch (err) {
     res.status(500).json({
@@ -46,7 +54,7 @@ export const createArticle = async (req: Request, res: Response): Promise<void> 
     await newArticle.save()
     res.status(201).json({
       message: 'success',
-      article: newArticle
+      article: formatArticle(newArticle)
     })
   } catch (err) {
     res.status(500).json({
@@ -68,7 +76,7 @@ export const updateArticle = async (req: Request, res: Response): Promise<void> 
       res.status(404).json({ message: 'Article not found' });
       return;
     }
-    res.status(200).json(updatedArticle);
+    res.status(200).json(formatArticle(updatedArticle));
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
