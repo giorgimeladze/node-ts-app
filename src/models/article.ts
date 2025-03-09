@@ -1,9 +1,10 @@
 import mongoose, {Schema, Document } from "mongoose";
+import { IUser } from './user';
 
 export interface IArticle extends Document {
   title: string,
   content: string,
-  author: string,
+  author: IUser['_id'],
   createdAt: Date
 }
 
@@ -12,7 +13,7 @@ const articleSchema: Schema = new Schema(
   {
     title: { type: String, required: true, unique: true, trim: true },
     content: { type: String, required: true, minlength: 10 },
-    author: { type: String, required: true, minlength: 3 },
+    author: { type: Schema.Types.ObjectId, ref: 'User', required: true }, 
   },
   { timestamps: true }
 );

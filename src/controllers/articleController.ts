@@ -6,13 +6,14 @@ const formatArticle = (article: IArticle) => ({
   id: article._id,
   title: article.title,
   content: article.content,
+  author: article.author,
   createdAt: article.createdAt,
 });
 
 // /api/v1/articles GET
 export const getAllArticles = async (req: Request, res: Response): Promise<void> => {
   try {
-    const articles: IArticle[] = await Article.find()
+    const articles: IArticle[] = await Article.find().populate('author', 'username email')
     res.status(200).json({
       message: 'success',
       size: articles.length,
